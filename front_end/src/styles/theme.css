@@ -1,0 +1,68 @@
+/*
+  Design tokens. Every colour, radius, shadow and font used in the app comes
+  from here, so matching the Figma file means editing this file only.
+*/
+:root {
+  /* brand */
+  --primary: #2f5bea;
+  --primary-hover: #2449c8;
+  --primary-soft: #eaf0ff;
+  --primary-text: #ffffff;
+
+  /* neutrals */
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-alt: #f9fafc;
+  --border: #e3e7ef;
+  --border-strong: #cfd6e3;
+  --text: #121a2c;
+  --text-muted: #5f6b80;
+  --text-faint: #8a94a7;
+
+  /* sidebar */
+  --sidebar-bg: #0f1a33;
+  --sidebar-text: #b9c3d9;
+  --sidebar-text-active: #ffffff;
+  --sidebar-hover: rgba(255, 255, 255, 0.06);
+  --sidebar-active: rgba(47, 91, 234, 0.9);
+
+  /* status */
+  --green: #1f9d55;
+  --green-soft: #e6f6ed;
+  --amber: #b7791f;
+  --amber-soft: #fdf3e1;
+  --red: #d64545;
+  --red-soft: #fdecec;
+  --blue: #2f5bea;
+  --blue-soft: #eaf0ff;
+  --violet: #7048e8;
+  --violet-soft: #f0ebff;
+
+  /* similarity risk colours */
+  --risk-low: #1f9d55;
+  --risk-medium: #d69e2e;
+  --risk-high: #d64545;
+  --match-bg: #ffe2a8;
+  --match-border: #f0b429;
+
+  /* shape */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow: 0 4px 16px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 20px 48px rgba(16, 24, 40, 0.18);
+
+  /* type */
+  --font: 'Inter', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+
+  --sidebar-width: 248px;
+  --topbar-height: 64px;
+}
