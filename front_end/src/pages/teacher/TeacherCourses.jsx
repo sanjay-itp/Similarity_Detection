@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
-import { Card, EmptyState, ErrorBox, Field, Modal, PageHeader, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Card, EmptyState, ErrorBox, Field, Modal, PageHeader, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 
 export default function TeacherCourses() {
   const notify = useToast();

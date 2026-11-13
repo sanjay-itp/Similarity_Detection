@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, formatSize } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 export default function MySubmissions() {
   const subs = useAsync(() => api.mySubmissions(), []);

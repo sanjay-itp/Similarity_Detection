@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { api, isMock } from '../../api';
 import { resetMockData } from '../../api/mock';
-import { Card, Field, PageHeader, Avatar } from '/components/ui';
-import { useToast } from '/components/Toast';
+import { Card, Field, PageHeader, Avatar } from '../../components/ui';
+import { useToast } from '../../components/Toast';
 
 export default function Account() {
   const { user, logout } = useAuth();

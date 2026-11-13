@@ -1,6 +1,6 @@
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
-import { Card, ErrorBox, PageHeader, Spinner } from '/components/ui';
+import { Card, ErrorBox, PageHeader, Spinner } from '../../components/ui';
 import UserTable from './UserTable';
 
 export default function ManageStudents() {

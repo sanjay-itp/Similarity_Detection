@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
-import { Card, ErrorBox, Field, Modal, PageHeader, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Card, ErrorBox, Field, Modal, PageHeader, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 import UserTable from './UserTable';
 
 function randomPassword() {

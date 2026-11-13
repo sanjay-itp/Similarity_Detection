@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from './AuthLayout';
 import { useAuth, homeFor } from '../../context/AuthContext';
 import { api, isMock } from '../../api';
-import { Field } from '/components/ui';
-import Icon from '/components/Icon';
+import { Field } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 const DEMO = [
   { role: 'Admin', email: 'admin@integritycheck.local', password: 'admin123' },

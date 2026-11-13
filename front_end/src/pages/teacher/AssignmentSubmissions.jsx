@@ -3,9 +3,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, formatSize } from '../../utils/format';
-import { Avatar, Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Avatar, Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 
 export default function AssignmentSubmissions() {
   const { id } = useParams();

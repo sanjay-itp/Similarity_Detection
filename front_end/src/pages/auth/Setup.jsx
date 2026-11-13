@@ -1,83 +1,100 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthLayout from './AuthLayout';
+import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { api } from '../../api';
-import { Field, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
+import { api, isMock } from '../../api';
+import { resetMockData } from '../../api/mock';
+import { Card, Field, PageHeader, Avatar } from '../../components/ui';
+import { useToast } from '../../components/Toast';
 
-// First-run screen. Shown only when the backend reports that no admin exists,
-// i.e. right after the administrator installs and starts the system.
-export default function Setup() {
-  const { setupAdmin } = useAuth();
-  const navigate = useNavigate();
-  const [checking, setChecking] = useState(true);
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' });
-  const [error, setError] = useState('');
+export default function Account() {
+  const { user, logout } = useAuth();
+  const notify = useToast();
+  const [form, setForm] = useState({ current: '', next: '', confirm: '' });
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    api
-      .getSetupStatus()
-      .then((s) => {
-        if (!s?.needsSetup) navigate('/login', { replace: true });
-        else setChecking(false);
-      })
-      .catch(() => setChecking(false));
-  }, [navigate]);
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
-    setError('');
-    if (form.password.length < 8) return setError('Password must be at least 8 characters');
-    if (form.password !== form.confirm) return setError('Passwords do not match');
+    if (form.next.length < 8) return notify('New password must be at least 8 characters', 'error');
+    if (form.next !== form.confirm) return notify('Passwords do not match', 'error');
     setBusy(true);
     try {
-      await setupAdmin({ name: form.name.trim(), email: form.email.trim(), password: form.password });
-      navigate('/admin', { replace: true });
+      await api.changePassword(form.current, form.next);
+      setForm({ current: '', next: '', confirm: '' });
+      notify('Password updated');
     } catch (err) {
-      setError(err.message);
+      notify(err.message, 'error');
     } finally {
       setBusy(false);
     }
   };
 
-  if (checking) return <Spinner />;
-
   return (
-    <AuthLayout>
-      <span className="eyebrow">First-time setup</span>
-      <h2 className="auth-title">Create the administrator account</h2>
-      <p className="auth-sub">
-        This account manages teachers, students and system settings. You can only do this once.
-      </p>
-      {error && (
-        <div className="alert alert-error">
-          <Icon name="alert" />
-          <span>{error}</span>
-        </div>
+    <>
+      <PageHeader title="My account" subtitle="Your profile and password." />
+      <div className="grid-2">
+        <Card title="Profile">
+          <div className="profile">
+            <Avatar name={user.name} size={56} />
+            <div>
+              <div className="profile-name">{user.name}</div>
+              <div className="muted">{user.email}</div>
+            </div>
+          </div>
+          <dl className="details">
+            <dt>Role</dt>
+            <dd className="capitalize">{user.role}</dd>
+            {user.studentId && (
+              <>
+                <dt>Student ID</dt>
+                <dd>{user.studentId}</dd>
+              </>
+            )}
+            {user.department && (
+              <>
+                <dt>Department</dt>
+                <dd>{user.department}</dd>
+              </>
+            )}
+          </dl>
+        </Card>
+        <Card title="Change password">
+          <form className="form" onSubmit={submit}>
+            <Field label="Current password">
+              <input type="password" required value={form.current} onChange={set('current')} autoComplete="current-password" />
+            </Field>
+            <Field label="New password" hint="At least 8 characters">
+              <input type="password" required value={form.next} onChange={set('next')} autoComplete="new-password" />
+            </Field>
+            <Field label="Confirm new password">
+              <input type="password" required value={form.confirm} onChange={set('confirm')} autoComplete="new-password" />
+            </Field>
+            <div>
+              <button className="btn btn-primary" disabled={busy}>
+                {busy ? 'Saving…' : 'Update password'}
+              </button>
+            </div>
+          </form>
+        </Card>
+      </div>
+      {isMock && (
+        <Card title="Demo data" className="mt">
+          <p className="muted">
+            You are running with built-in demo data stored in this browser. Resetting restores the original demo accounts,
+            courses and submissions.
+          </p>
+          <button
+            className="btn btn-ghost"
+            onClick={async () => {
+              resetMockData();
+              await logout();
+              window.location.href = '/login';
+            }}
+          >
+            Reset demo data
+          </button>
+        </Card>
       )}
-      <form onSubmit={submit} className="form">
-        <Field label="Full name">
-          <input required value={form.name} onChange={set('name')} />
-        </Field>
-        <Field label="Email address">
-          <input type="email" required value={form.email} onChange={set('email')} />
-        </Field>
-        <div className="form-row">
-          <Field label="Password">
-            <input type="password" required value={form.password} onChange={set('password')} />
-          </Field>
-          <Field label="Confirm password">
-            <input type="password" required value={form.confirm} onChange={set('confirm')} />
-          </Field>
-        </div>
-        <button className="btn btn-primary btn-block" disabled={busy}>
-          {busy ? 'Setting up…' : 'Finish setup'}
-        </button>
-      </form>
-    </AuthLayout>
+    </>
   );
 }

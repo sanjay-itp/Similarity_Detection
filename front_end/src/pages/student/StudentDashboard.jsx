@@ -3,7 +3,7 @@ import { api } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, timeLeft } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner, StatCard } from '/components/ui';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner, StatCard } from '../../components/ui';
 
 export default function StudentDashboard() {
   const { user } = useAuth();

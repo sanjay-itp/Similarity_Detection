@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, riskLevel } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, ScoreBar, Spinner, StatCard } from '/components/ui';
-import Icon from '/components/Icon';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, ScoreBar, Spinner, StatCard } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 const REVIEW = {
   pending: { tone: 'neutral', label: 'Not reviewed' },

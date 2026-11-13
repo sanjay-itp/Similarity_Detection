@@ -3,8 +3,8 @@ import { api } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, timeLeft } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner, StatCard } from '/components/ui';
-import Icon from '/components/Icon';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner, StatCard } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 export default function TeacherDashboard() {
   const { user } = useAuth();

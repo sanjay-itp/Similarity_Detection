@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, timeLeft } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner } from '/components/ui';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, Spinner } from '../../components/ui';
 
 function statusOf(a) {
   if (a.mySubmission) return a.mySubmission.late ? { tone: 'amber', label: 'Submitted late' } : { tone: 'green', label: 'Submitted' };

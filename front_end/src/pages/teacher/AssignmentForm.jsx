@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field, Modal } from '/components/ui';
+import { Field, Modal } from '../../components/ui';
 import { toInputDateTime } from '../../utils/format';
 
 const TYPES = ['.pdf', '.docx', '.txt', '.doc', '.odt', '.py', '.java', '.c', '.cpp', '.js'];

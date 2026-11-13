@@ -1,6 +1,6 @@
 // Small shared UI pieces used across all pages.
 import { useEffect } from 'react';
-import Icon from '/Icon';
+import Icon from './Icon';
 import { riskLevel } from '../utils/format';
 
 export function PageHeader({ title, subtitle, actions, back }) {

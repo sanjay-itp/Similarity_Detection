@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useState } from 'react';
-import Icon from '/Icon';
+import Icon from './Icon';
 
 const ToastContext = createContext(() => {});
 

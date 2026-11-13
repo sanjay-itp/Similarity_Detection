@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate } from '../../utils/format';
-import { Card, ErrorBox, PageHeader, Spinner, StatCard } from '/components/ui';
-import Icon from '/components/Icon';
+import { Card, ErrorBox, PageHeader, Spinner, StatCard } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 export default function AdminDashboard() {
   const stats = useAsync(() => api.getAdminStats(), []);

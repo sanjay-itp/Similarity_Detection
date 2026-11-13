@@ -3,9 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, Modal, PageHeader, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Badge, Card, EmptyState, ErrorBox, Modal, PageHeader, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 import AssignmentForm from './AssignmentForm';
 
 export default function TeacherAssignments() {

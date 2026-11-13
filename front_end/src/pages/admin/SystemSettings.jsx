@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
-import { Card, ErrorBox, Field, PageHeader, Spinner, Toggle } from '/components/ui';
-import { useToast } from '/components/Toast';
+import { Card, ErrorBox, Field, PageHeader, Spinner, Toggle } from '../../components/ui';
+import { useToast } from '../../components/Toast';
 
 const FILE_TYPES = ['.pdf', '.docx', '.txt', '.doc', '.odt', '.py', '.java', '.c', '.cpp', '.js'];
 

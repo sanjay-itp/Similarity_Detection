@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { api } from '../../api';
 import { formatDate } from '../../utils/format';
-import { Avatar, Badge, EmptyState, Field, Modal } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Avatar, Badge, EmptyState, Field, Modal } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 
 // Shared table for the Teachers and Students admin pages.
 export default function UserTable({ users, role, onChange }) {

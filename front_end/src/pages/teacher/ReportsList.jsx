@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate } from '../../utils/format';
-import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner } from '/components/ui';
+import { Badge, Card, EmptyState, ErrorBox, PageHeader, ScoreBadge, Spinner } from '../../components/ui';
 
 export default function ReportsList() {
   const data = useAsync(() => Promise.all([api.listReports(), api.getSettings()]), []);

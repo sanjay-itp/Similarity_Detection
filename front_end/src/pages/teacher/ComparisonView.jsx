@@ -3,9 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import { api } from '../../api';
 import { useAsync } from '../../utils/useAsync';
 import { formatDate, riskLevel } from '../../utils/format';
-import { Card, ErrorBox, PageHeader, Spinner } from '/components/ui';
-import Icon from '/components/Icon';
-import { useToast } from '/components/Toast';
+import { Card, ErrorBox, PageHeader, Spinner } from '../../components/ui';
+import Icon from '../../components/Icon';
+import { useToast } from '../../components/Toast';
 
 // Splits text into plain and highlighted pieces using [start, end] ranges.
 function Highlighted({ text, ranges }) {

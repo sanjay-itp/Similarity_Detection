@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { isMock } from '../api';
-import Icon from '/Icon';
+import Icon from './Icon';
 import { Avatar } from './ui';
 
 const NAV = {

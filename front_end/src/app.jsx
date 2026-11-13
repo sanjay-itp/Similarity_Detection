@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth, homeFor } from './context/AuthContext';
-import Layout from '/components/Layout';
-import { Spinner } from '/components/ui';
+import Layout from './components/Layout';
+import { Spinner } from './components/ui';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';

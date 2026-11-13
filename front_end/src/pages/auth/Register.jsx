@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from './AuthLayout';
 import { useAuth } from '../../context/AuthContext';
-import { Field } from '/components/ui';
-import Icon from '/components/Icon';
+import { Field } from '../../components/ui';
+import Icon from '../../components/Icon';
 
 export default function Register() {
   const { register } = useAuth();
