@@ -16,9 +16,14 @@ export default function AdminDashboard() {
         title="Administrator dashboard"
         subtitle={settings.data?.institutionName || 'System overview'}
         actions={
-          <Link to="/admin/teachers?new=1" className="btn btn-primary">
-            <Icon name="plus" /> Add teacher
-          </Link>
+          <>
+            <Link to="/admin/teachers?new=1" className="btn btn-ghost">
+              <Icon name="plus" /> New teacher
+            </Link>
+            <Link to="/admin/students?new=1" className="btn btn-primary">
+              <Icon name="plus" /> New student
+            </Link>
+          </>
         }
       />
 
@@ -61,8 +66,6 @@ export default function AdminDashboard() {
               <dd>{settings.data.allowedFileTypes.join(', ')}</dd>
               <dt>Max upload size</dt>
               <dd>{settings.data.maxFileSizeMb} MB</dd>
-              <dt>Student self registration</dt>
-              <dd>{settings.data.allowStudentRegistration ? 'Open' : 'Closed'}</dd>
             </dl>
           )}
           <Link to="/admin/settings" className="btn btn-ghost btn-block mt-sm">

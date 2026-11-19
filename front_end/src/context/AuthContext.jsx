@@ -30,12 +30,6 @@ export function AuthProvider({ children }) {
     return res.user;
   }, []);
 
-  const register = useCallback(async (data) => {
-    const res = await api.registerStudent(data);
-    setUser(res.user);
-    return res.user;
-  }, []);
-
   const setupAdmin = useCallback(async (data) => {
     const res = await api.createFirstAdmin(data);
     setUser(res.user);
@@ -48,7 +42,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, setupAdmin, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, setupAdmin, logout }}>
       {children}
     </AuthContext.Provider>
   );

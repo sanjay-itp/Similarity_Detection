@@ -185,17 +185,6 @@ export async function login(email, password) {
   return { token: `mock-${user.id}`, user: publicUser(user) };
 }
 
-export async function registerStudent({ name, email, studentId, password }) {
-  await delay();
-  const db = load();
-  if (!db.settings.allowStudentRegistration) fail('Student registration is currently closed', 403);
-  if (db.users.some((u) => u.email.toLowerCase() === email.toLowerCase())) fail('An account with this email already exists', 409);
-  const user = { id: newId('u'), role: 'student', name, email, studentId, password, active: true, createdAt: new Date().toISOString() };
-  db.users.push(user);
-  save();
-  return { token: `mock-${user.id}`, user: publicUser(user) };
-}
-
 export async function me() {
   await delay(80);
   return publicUser(currentUser());
@@ -253,6 +242,20 @@ export async function createTeacher({ name, email, department, password }) {
   const user = { id: newId('u'), role: 'teacher', name, email, department, password, active: true, createdAt: new Date().toISOString() };
   db.users.push(user);
   log(admin, `Created teacher account for ${name}`);
+  save();
+  return publicUser(user);
+}
+
+export async function createStudent({ name, email, studentId, password }) {
+  await delay();
+  const admin = requireRole('admin');
+  const db = load();
+  if (db.users.some((u) => u.email.toLowerCase() === email.toLowerCase())) fail('An account with this email already exists', 409);
+  if (db.users.some((u) => u.role === 'student' && u.studentId && u.studentId.toLowerCase() === studentId.toLowerCase()))
+    fail('A student with this ID already exists', 409);
+  const user = { id: newId('u'), role: 'student', name, email, studentId, password, active: true, createdAt: new Date().toISOString() };
+  db.users.push(user);
+  log(admin, `Created student account for ${name}`);
   save();
   return publicUser(user);
 }

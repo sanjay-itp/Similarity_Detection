@@ -47,9 +47,9 @@ Any path that is not a file or `/api` must return `dist/index.html` so React Rou
 
 ## Roles
 
-- **Administrator**: installs and runs the system. On a fresh install with no admin, the app opens a one time setup page to create the admin account. Creates teacher accounts (teachers cannot sign up), manages students and sets system wide rules (similarity threshold, file types, upload size, whether students can self register).
+- **Administrator**: installs and runs the system. On a fresh install with no admin, the app opens a one time setup page to create the admin account. Creates every teacher and student account (nobody signs up on their own), manages them and sets system wide rules (similarity threshold, file types, upload size).
 - **Teacher**: creates courses (each gets a join code), publishes assignments, sees submissions, runs similarity checks, reads ranked reports and a similarity matrix, compares two submissions side by side with matched text highlighted, and marks pairs as flagged or cleared.
-- **Student**: registers on their own, joins courses with a join code, uploads assignments (drag and drop, file type and size checked) and tracks status. Students never see similarity scores.
+- **Student**: signs in with the account the administrator created, joins courses with a join code, uploads assignments (drag and drop, file type and size checked) and tracks status. Students never see similarity scores.
 
 ## Folder layout
 

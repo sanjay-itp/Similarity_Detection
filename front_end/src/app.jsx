@@ -4,7 +4,6 @@ import Layout from './components/Layout';
 import { Spinner } from './components/ui';
 
 import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
 import Setup from './pages/auth/Setup';
 import Account from './pages/shared/Account';
 import NotFound from './pages/shared/NotFound';
@@ -49,7 +48,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
-      <Route path="/register" element={<GuestOnly><Register /></GuestOnly>} />
+      <Route path="/register" element={<Navigate to="/login" replace />} />
       <Route path="/setup" element={<GuestOnly><Setup /></GuestOnly>} />
 
       <Route element={<RequireRole><Layout /></RequireRole>}>

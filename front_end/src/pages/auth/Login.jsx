@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from './AuthLayout';
 import { useAuth, homeFor } from '../../context/AuthContext';
 import { api, isMock } from '../../api';
@@ -45,8 +45,7 @@ export default function Login() {
 
   return (
     <AuthLayout>
-      <h2 className="auth-title">Sign in</h2>
-      <p className="auth-sub">Use the account given to you by your institution.</p>
+      <h2 className="auth-title">Welcome back</h2>
 
       {error && (
         <div className="alert alert-error">
@@ -56,7 +55,7 @@ export default function Login() {
       )}
 
       <form onSubmit={submit} className="form">
-        <Field label="Email address">
+        <Field label="Email">
           <input
             type="email"
             autoComplete="email"
@@ -74,8 +73,7 @@ export default function Login() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
-            />
+                          />
             <button type="button" className="input-btn" onClick={() => setShowPw((s) => !s)}>
               {showPw ? 'Hide' : 'Show'}
             </button>
@@ -86,10 +84,7 @@ export default function Login() {
         </button>
       </form>
 
-      <p className="auth-switch">
-        Student without an account? <Link to="/register">Create one</Link>
-      </p>
-      <p className="auth-note">Teacher accounts are created by the system administrator.</p>
+      <p className="auth-note">No account? Ask your administrator.</p>
 
       {isMock && (
         <div className="demo-box">

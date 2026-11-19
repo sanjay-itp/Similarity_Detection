@@ -17,7 +17,6 @@ const real = {
 
   // ---------- auth ----------
   login: (email, password) => request('/auth/login', { method: 'POST', body: { email, password } }),
-  registerStudent: (data) => request('/auth/register', { method: 'POST', body: data }),
   me: () => request('/auth/me'),
   logout: () => request('/auth/logout', { method: 'POST' }),
   changePassword: (currentPassword, newPassword) =>
@@ -27,6 +26,7 @@ const real = {
   getAdminStats: () => request('/admin/stats'),
   listUsers: (role) => request(`/admin/users?role=${encodeURIComponent(role)}`),
   createTeacher: (data) => request('/admin/teachers', { method: 'POST', body: data }),
+  createStudent: (data) => request('/admin/students', { method: 'POST', body: data }),
   setUserActive: (id, active) => request(`/admin/users/${id}`, { method: 'PATCH', body: { active } }),
   resetUserPassword: (id, password) =>
     request(`/admin/users/${id}/reset-password`, { method: 'POST', body: { password } }),
@@ -77,7 +77,6 @@ async function withToken(promise) {
 export const api = {
   ...impl,
   login: (email, password) => withToken(impl.login(email, password)),
-  registerStudent: (data) => withToken(impl.registerStudent(data)),
   createFirstAdmin: (data) => withToken(impl.createFirstAdmin(data)),
   logout: async () => {
     try {

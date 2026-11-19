@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api';
-import { Card, ErrorBox, Field, PageHeader, Spinner, Toggle } from '../../components/ui';
+import { Card, ErrorBox, Field, PageHeader, Spinner } from '../../components/ui';
 import { useToast } from '../../components/Toast';
 
 const FILE_TYPES = ['.pdf', '.docx', '.txt', '.doc', '.odt', '.py', '.java', '.c', '.cpp', '.js'];
@@ -53,11 +53,6 @@ export default function SystemSettings() {
             <Field label="Institution name">
               <input value={form.institutionName || ''} onChange={(e) => set('institutionName', e.target.value)} />
             </Field>
-            <Toggle
-              checked={form.allowStudentRegistration}
-              onChange={(v) => set('allowStudentRegistration', v)}
-              label="Allow students to create their own accounts"
-            />
           </div>
         </Card>
 

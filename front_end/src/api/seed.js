@@ -49,7 +49,6 @@ export function buildSeed() {
       similarityThreshold: 40,
       allowedFileTypes: ['.pdf', '.docx', '.txt'],
       maxFileSizeMb: 10,
-      allowStudentRegistration: true,
       ngramSize: 5,
     },
     users: [

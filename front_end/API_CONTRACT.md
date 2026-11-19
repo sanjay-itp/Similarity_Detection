@@ -7,7 +7,7 @@ This is what the frontend expects from the backend. Every call is in
 
 - Base path: `/api`. In development the Vite server forwards `/api/*` to `VITE_BACKEND_URL` (default `http://localhost:8000`).
 - Requests and responses are JSON, except file upload (multipart).
-- Auth: login, register and setup return `{ token, user }`. The frontend sends `Authorization: Bearer <token>` on every later request.
+- Auth: login and setup return `{ token, user }`. The frontend sends `Authorization: Bearer <token>` on every later request.
 - Errors: send a non-2xx status with `{ "message": "Human readable text" }`. The frontend shows `message` to the user.
 - `401` logs the user out. `403` means "not allowed for this role".
 - Dates are ISO 8601 strings (`2026-11-13T09:30:00Z`). IDs can be strings or numbers.
@@ -40,7 +40,7 @@ This is what the frontend expects from the backend. Every call is in
 
 // Settings
 { "institutionName": "...", "similarityThreshold": 40, "allowedFileTypes": [".pdf", ".docx", ".txt"],
-  "maxFileSizeMb": 10, "allowStudentRegistration": true, "ngramSize": 5 }
+  "maxFileSizeMb": 10, "ngramSize": 5 }
 ```
 
 ## Endpoints
@@ -60,18 +60,20 @@ If you would rather create the admin from a command line script during installat
 | Method | Path | Who | Body | Returns |
 |---|---|---|---|---|
 | POST | `/auth/login` | anyone | `{ email, password }` | `{ token, user }` (403 if deactivated) |
-| POST | `/auth/register` | anyone | `{ name, email, studentId, password }` | `{ token, user }`. Always creates a **student**. 403 if registration is closed |
 | GET | `/auth/me` | signed in | | `User` |
 | POST | `/auth/logout` | signed in | | `{ ok: true }` |
 | POST | `/auth/change-password` | signed in | `{ currentPassword, newPassword }` | `{ ok: true }` |
 
 ### Admin
 
+There is no self sign-up. Every student, teacher and admin account is created here by an administrator.
+
 | Method | Path | Body | Returns |
 |---|---|---|---|
 | GET | `/admin/stats` | | `{ students, teachers, courses, assignments, submissions, checksRun }` |
 | GET | `/admin/users?role=teacher\|student` | | `User[]` plus `courseCount` (teachers) or `submissionCount` (students) |
-| POST | `/admin/teachers` | `{ name, email, department, password }` | `User` (the only way to create a teacher) |
+| POST | `/admin/teachers` | `{ name, email, department, password }` | `User`. 409 if the email is taken |
+| POST | `/admin/students` | `{ name, email, studentId, password }` | `User`. 409 if the email or student ID is taken |
 | PATCH | `/admin/users/:id` | `{ active }` | `User` |
 | POST | `/admin/users/:id/reset-password` | `{ password }` | `{ ok: true }` |
 | DELETE | `/admin/users/:id` | | `{ ok: true }` |
