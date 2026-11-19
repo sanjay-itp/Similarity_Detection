@@ -6,8 +6,9 @@
 import { buildSeed } from './seed';
 import { getToken } from './client';
 import { compareTexts } from '../utils/similarity';
+import { SEMESTER_COUNT } from '../utils/semesters';
 
-const DB_KEY = 'ic_mock_db_v2';
+const DB_KEY = 'ic_mock_db_v3';
 let memoryDb = null;
 
 function freshSeed() {
@@ -94,6 +95,7 @@ function courseView(c) {
     code: c.code,
     name: c.name,
     joinCode: c.joinCode,
+    semester: c.semester,
     teacherId: c.teacherId,
     teacherName: userName(c.teacherId),
     studentCount: c.studentIds.length,
@@ -246,15 +248,87 @@ export async function createTeacher({ name, email, department, password }) {
   return publicUser(user);
 }
 
-export async function createStudent({ name, email, studentId, password }) {
+function checkSemester(semester) {
+  const n = Number(semester);
+  if (!Number.isInteger(n) || n < 1 || n > SEMESTER_COUNT) fail(`Choose a semester from 1 to ${SEMESTER_COUNT}`);
+  return n;
+}
+
+// Put a student in every course of a semester (and take them out of another).
+function enrolInSemester(db, studentId, semester) {
+  db.courses
+    .filter((c) => c.semester === semester && !c.studentIds.includes(studentId))
+    .forEach((c) => c.studentIds.push(studentId));
+}
+function leaveSemester(db, studentId, semester) {
+  db.courses
+    .filter((c) => c.semester === semester)
+    .forEach((c) => {
+      c.studentIds = c.studentIds.filter((id) => id !== studentId);
+    });
+}
+function moveStudent(db, user, semester) {
+  if (user.semester) leaveSemester(db, user.id, user.semester);
+  user.semester = semester;
+  enrolInSemester(db, user.id, semester);
+}
+
+export async function getSemesters() {
+  await delay();
+  requireRole('admin');
+  const db = load();
+  return Array.from({ length: SEMESTER_COUNT }, (_, i) => i + 1).map((n) => ({
+    semester: n,
+    courses: db.courses.filter((c) => c.semester === n).map((c) => ({ id: c.id, code: c.code, name: c.name })),
+    studentCount: db.users.filter((u) => u.role === 'student' && u.semester === n).length,
+  }));
+}
+
+export async function setStudentSemester(id, semester) {
+  await delay();
+  const admin = requireRole('admin');
+  const n = checkSemester(semester);
+  const db = load();
+  const user = db.users.find((u) => u.id === id && u.role === 'student');
+  if (!user) fail('Student not found', 404);
+  moveStudent(db, user, n);
+  log(admin, `Moved ${user.name} to semester ${n}`);
+  save();
+  return publicUser(user);
+}
+
+export async function promoteStudents(studentIds) {
+  await delay();
+  const admin = requireRole('admin');
+  const db = load();
+  const promoted = [];
+  const skipped = [];
+  for (const id of studentIds) {
+    const user = db.users.find((u) => u.id === id && u.role === 'student');
+    if (!user) skipped.push({ id, reason: 'not found' });
+    else if (!user.semester) skipped.push({ id, reason: 'no semester set' });
+    else if (user.semester >= SEMESTER_COUNT) skipped.push({ id, reason: 'already in the final semester' });
+    else {
+      moveStudent(db, user, user.semester + 1);
+      promoted.push(publicUser(user));
+    }
+  }
+  if (promoted.length) log(admin, `Moved ${promoted.length} student${promoted.length === 1 ? '' : 's'} up a semester`);
+  save();
+  return { promoted, skipped };
+}
+
+export async function createStudent({ name, email, studentId, semester, password }) {
   await delay();
   const admin = requireRole('admin');
   const db = load();
   if (db.users.some((u) => u.email.toLowerCase() === email.toLowerCase())) fail('An account with this email already exists', 409);
   if (db.users.some((u) => u.role === 'student' && u.studentId && u.studentId.toLowerCase() === studentId.toLowerCase()))
     fail('A student with this ID already exists', 409);
-  const user = { id: newId('u'), role: 'student', name, email, studentId, password, active: true, createdAt: new Date().toISOString() };
+  const n = checkSemester(semester);
+  const user = { id: newId('u'), role: 'student', name, email, studentId, semester: n, password, active: true, createdAt: new Date().toISOString() };
   db.users.push(user);
+  enrolInSemester(db, user.id, n);
   log(admin, `Created student account for ${name}`);
   save();
   return publicUser(user);
@@ -326,12 +400,15 @@ export async function listCourses() {
   return visibleCourses(user).map(courseView);
 }
 
-export async function createCourse({ code, name }) {
+export async function createCourse({ code, name, semester }) {
   await delay();
   const teacher = requireRole('teacher');
+  const n = checkSemester(semester);
   const db = load();
   const joinCode = `${code.replace(/[^A-Z0-9]/gi, '').slice(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-  const course = { id: newId('c'), code, name, teacherId: teacher.id, joinCode, studentIds: [] };
+  // everyone already in that semester is enrolled straight away
+  const studentIds = db.users.filter((u) => u.role === 'student' && u.semester === n).map((u) => u.id);
+  const course = { id: newId('c'), code, name, semester: n, teacherId: teacher.id, joinCode, studentIds };
   db.courses.push(course);
   save();
   return courseView(course);

@@ -4,6 +4,7 @@ import { api, isMock } from '../../api';
 import { resetMockData } from '../../api/mock';
 import { Card, Field, PageHeader, Avatar } from '../../components/ui';
 import { useToast } from '../../components/Toast';
+import { semesterLabel } from '../../utils/semesters';
 
 export default function Account() {
   const { user, logout } = useAuth();
@@ -48,6 +49,8 @@ export default function Account() {
               <>
                 <dt>Student ID</dt>
                 <dd>{user.studentId}</dd>
+                <dt>Semester</dt>
+                <dd>{semesterLabel(user.semester)}</dd>
               </>
             )}
             {user.department && (

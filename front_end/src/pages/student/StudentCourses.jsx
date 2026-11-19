@@ -4,9 +4,12 @@ import { useAsync } from '../../utils/useAsync';
 import { Card, EmptyState, ErrorBox, PageHeader, Spinner } from '../../components/ui';
 import Icon from '../../components/Icon';
 import { useToast } from '../../components/Toast';
+import { useAuth } from '../../context/AuthContext';
+import { semesterLabel } from '../../utils/semesters';
 
 export default function StudentCourses() {
   const notify = useToast();
+  const { user } = useAuth();
   const courses = useAsync(() => api.listCourses(), []);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
@@ -29,8 +32,12 @@ export default function StudentCourses() {
 
   return (
     <>
-      <PageHeader title="My courses" subtitle="Join a course with the code your teacher gives you." />
+      <PageHeader
+        title="My courses"
+        subtitle={user?.semester ? `${semesterLabel(user.semester)} courses are added for you.` : undefined}
+      />
       <Card className="mb">
+        <p className="muted small mb-sm">Taking a course from another semester? Enter its join code.</p>
         <form className="join" onSubmit={join}>
           <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter join code, e.g. SE-4821" aria-label="Join code" />
           <button className="btn btn-primary" disabled={busy || !code.trim()}>
@@ -49,7 +56,10 @@ export default function StudentCourses() {
         <div className="cards">
           {courses.data.map((c) => (
             <div key={c.id} className="course-card">
-              <span className="course-code">{c.code}</span>
+              <div className="course-meta">
+                <span className="course-code">{c.code}</span>
+                <span className="muted small">{semesterLabel(c.semester)}</span>
+              </div>
               <h3>{c.name}</h3>
               <div className="muted small">{c.teacherName}</div>
             </div>

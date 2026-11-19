@@ -108,6 +108,9 @@ code {
 .mb {
   margin-bottom: 20px;
 }
+.mb-sm {
+  margin-bottom: 10px;
+}
 .stack {
   display: flex;
   flex-direction: column;
@@ -808,6 +811,48 @@ code {
 .table td.right {
   text-align: right;
 }
+.table .check-col {
+  width: 44px;
+  padding-right: 0;
+}
+.table .check-col input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+.table td.nowrap {
+  white-space: nowrap;
+}
+.table tbody tr.selected td {
+  background: var(--primary-soft);
+}
+
+/* students page: semester filter + bulk move */
+.semester-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  min-height: 40px;
+}
+.semester-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.semester-filter select {
+  width: auto;
+  min-width: 190px;
+}
+.bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 .row-flag td:first-child {
   box-shadow: inset 3px 0 0 var(--risk-high);
 }
@@ -817,6 +862,9 @@ code {
   gap: 6px;
   justify-content: flex-end;
   flex-wrap: wrap;
+}
+.table .row-actions {
+  flex-wrap: nowrap;
 }
 .person,
 .file {
@@ -993,6 +1041,11 @@ code {
   border: 1px dashed var(--border-strong);
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
+}
+.course-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 .joincode strong {
   font-family: var(--font-mono);

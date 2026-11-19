@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { api } from '../../api';
 import { formatDate } from '../../utils/format';
+import { semesterLabel } from '../../utils/semesters';
 import { Avatar, Badge, EmptyState, Field, Modal } from '../../components/ui';
 import Icon from '../../components/Icon';
 import { useToast } from '../../components/Toast';
 
 // Shared table for the Teachers and Students admin pages.
-export default function UserTable({ users, role, onChange }) {
+// selected / onSelect / onChangeSemester are optional (students page only).
+export default function UserTable({ users, role, onChange, selected, onSelect, onChangeSemester }) {
   const notify = useToast();
   const [query, setQuery] = useState('');
   const [resetFor, setResetFor] = useState(null);
@@ -23,6 +25,19 @@ export default function UserTable({ users, role, onChange }) {
       (u.studentId || '').toLowerCase().includes(q) ||
       (u.department || '').toLowerCase().includes(q)
   );
+  const selectable = Boolean(selected && onSelect);
+  const allSelected = selectable && rows.length > 0 && rows.every((u) => selected.has(u.id));
+  const toggleAll = () => {
+    const next = new Set(selected);
+    rows.forEach((u) => (allSelected ? next.delete(u.id) : next.add(u.id)));
+    onSelect(next);
+  };
+  const toggleOne = (id) => {
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    onSelect(next);
+  };
 
   const toggleActive = async (u) => {
     try {
@@ -86,17 +101,33 @@ export default function UserTable({ users, role, onChange }) {
           <table className="table">
             <thead>
               <tr>
+                {selectable && (
+                  <th className="check-col">
+                    <input type="checkbox" aria-label="Select all" checked={allSelected} onChange={toggleAll} />
+                  </th>
+                )}
                 <th>Name</th>
                 <th>{role === 'student' ? 'Student ID' : 'Department'}</th>
+                {role === 'student' && <th>Semester</th>}
                 <th>{role === 'student' ? 'Submissions' : 'Courses'}</th>
-                <th>Joined</th>
+                {role !== 'student' && <th>Joined</th>}
                 <th>Status</th>
                 <th className="right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((u) => (
-                <tr key={u.id}>
+                <tr key={u.id} className={selectable && selected.has(u.id) ? 'selected' : undefined}>
+                  {selectable && (
+                    <td className="check-col">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${u.name}`}
+                        checked={selected.has(u.id)}
+                        onChange={() => toggleOne(u.id)}
+                      />
+                    </td>
+                  )}
                   <td>
                     <div className="person">
                       <Avatar name={u.name} size={32} />
@@ -106,12 +137,18 @@ export default function UserTable({ users, role, onChange }) {
                       </div>
                     </div>
                   </td>
-                  <td>{role === 'student' ? u.studentId : u.department || '–'}</td>
+                  <td className={role === 'student' ? 'nowrap' : undefined}>{role === 'student' ? u.studentId : u.department || '–'}</td>
+                  {role === 'student' && <td className="nowrap">{semesterLabel(u.semester)}</td>}
                   <td>{role === 'student' ? u.submissionCount ?? 0 : u.courseCount ?? 0}</td>
-                  <td>{formatDate(u.createdAt)}</td>
+                  {role !== 'student' && <td className="nowrap">{formatDate(u.createdAt)}</td>}
                   <td>{u.active ? <Badge tone="green">Active</Badge> : <Badge tone="neutral">Inactive</Badge>}</td>
                   <td className="right">
                     <div className="row-actions">
+                      {onChangeSemester && (
+                        <button className="icon-btn" title="Change semester" onClick={() => onChangeSemester(u)}>
+                          <Icon name="edit" />
+                        </button>
+                      )}
                       <button className="icon-btn" title="Reset password" onClick={() => setResetFor(u)}>
                         <Icon name="key" />
                       </button>

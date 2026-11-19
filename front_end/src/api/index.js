@@ -27,6 +27,9 @@ const real = {
   listUsers: (role) => request(`/admin/users?role=${encodeURIComponent(role)}`),
   createTeacher: (data) => request('/admin/teachers', { method: 'POST', body: data }),
   createStudent: (data) => request('/admin/students', { method: 'POST', body: data }),
+  getSemesters: () => request('/admin/semesters'),
+  setStudentSemester: (id, semester) => request(`/admin/users/${id}`, { method: 'PATCH', body: { semester } }),
+  promoteStudents: (studentIds) => request('/admin/students/promote', { method: 'POST', body: { studentIds } }),
   setUserActive: (id, active) => request(`/admin/users/${id}`, { method: 'PATCH', body: { active } }),
   resetUserPassword: (id, password) =>
     request(`/admin/users/${id}/reset-password`, { method: 'POST', body: { password } }),

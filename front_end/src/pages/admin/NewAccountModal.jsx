@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { api } from '../../api';
+import { useAsync } from '../../utils/useAsync';
+import { SEMESTERS, semesterLabel } from '../../utils/semesters';
 import { Field, Modal } from '../../components/ui';
 import Icon from '../../components/Icon';
 import { useToast } from '../../components/Toast';
@@ -23,7 +25,7 @@ const ROLES = {
   },
 };
 
-const emptyForm = () => ({ name: '', email: '', studentId: '', department: '', password: randomPassword() });
+const emptyForm = () => ({ name: '', email: '', studentId: '', department: '', semester: '', password: randomPassword() });
 
 // Admins create every account. Nobody signs up on their own.
 export default function NewAccountModal({ role, onCreated, onClose }) {
@@ -32,18 +34,24 @@ export default function NewAccountModal({ role, onCreated, onClose }) {
   const [form, setForm] = useState(emptyForm);
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState(null);
+  const isStudent = role === 'student';
+  // course list per semester, so the admin sees what the student will join
+  const semesters = useAsync(() => (isStudent ? api.getSemesters() : Promise.resolve([])), [isStudent]);
+  const chosen = (semesters.data || []).find((s) => s.semester === Number(form.semester));
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
     if (form.password.length < 8) return notify('Password must be at least 8 characters', 'error');
+    if (isStudent && !form.semester) return notify('Choose a semester', 'error');
     setBusy(true);
     try {
       const user = await cfg.create({
         name: form.name.trim(),
         email: form.email.trim(),
         [cfg.extra.key]: form[cfg.extra.key].trim(),
+        ...(isStudent ? { semester: Number(form.semester) } : {}),
         password: form.password,
       });
       onCreated(user);
@@ -56,9 +64,10 @@ export default function NewAccountModal({ role, onCreated, onClose }) {
     }
   };
 
+  // keep the semester when adding several students from the same class
   const addAnother = () => {
     setCreated(null);
-    setForm(emptyForm());
+    setForm((f) => ({ ...emptyForm(), semester: f.semester }));
   };
 
   return (
@@ -112,6 +121,29 @@ export default function NewAccountModal({ role, onCreated, onClose }) {
               />
             </Field>
           </div>
+          {isStudent && (
+            <Field
+              label="Semester"
+              hint={
+                chosen
+                  ? chosen.courses.length
+                    ? `Joins ${chosen.courses.map((c) => c.code).join(', ')} automatically.`
+                    : `No courses in ${semesterLabel(chosen.semester)} yet. They join new ones automatically.`
+                  : 'They join every course in this semester automatically.'
+              }
+            >
+              <select required value={form.semester} onChange={set('semester')}>
+                <option value="" disabled>
+                  Choose a semester
+                </option>
+                {SEMESTERS.map((n) => (
+                  <option key={n} value={n}>
+                    {semesterLabel(n)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          )}
           <Field label="Temporary password" hint="They can change it after signing in.">
             <div className="input-with-btn">
               <input required value={form.password} onChange={set('password')} />

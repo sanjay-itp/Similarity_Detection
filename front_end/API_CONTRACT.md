@@ -20,10 +20,12 @@ This is what the frontend expects from the backend. Every call is in
 { "id": "u1", "role": "admin|teacher|student", "name": "Sita Thapa", "email": "sita@college.edu",
   "active": true, "createdAt": "...",
   "studentId": "CS-2023-014",   // students only
+  "semester": 5,                // students only, 1 to 8
   "department": "Computer Science" } // teachers only
 
 // Course
 { "id": "c1", "code": "CS301", "name": "Software Engineering", "joinCode": "SE-4821",
+  "semester": 5,                // 1 to 8
   "teacherId": "u2", "teacherName": "Dr. Anita Sharma", "studentCount": 5 }
 
 // Assignment
@@ -68,13 +70,25 @@ If you would rather create the admin from a command line script during installat
 
 There is no self sign-up. Every student, teacher and admin account is created here by an administrator.
 
+**Semesters.** A programme has 8 semesters. The semesters and the courses in each are stored in the database
+(every course has a `semester`). A student is always in exactly one semester and is enrolled in **every** course of
+that semester. The backend keeps enrolment in sync:
+
+- creating a student enrols them in all courses of their semester
+- moving a student (PATCH `semester` or promote) removes them from the old semester's courses and enrols them in the
+  new semester's courses. Their submissions and reports are kept
+- creating a course enrols every student already in that semester
+- courses joined with a join code (for example a retake) are not touched when a student moves
+
 | Method | Path | Body | Returns |
 |---|---|---|---|
 | GET | `/admin/stats` | | `{ students, teachers, courses, assignments, submissions, checksRun }` |
 | GET | `/admin/users?role=teacher\|student` | | `User[]` plus `courseCount` (teachers) or `submissionCount` (students) |
 | POST | `/admin/teachers` | `{ name, email, department, password }` | `User`. 409 if the email is taken |
-| POST | `/admin/students` | `{ name, email, studentId, password }` | `User`. 409 if the email or student ID is taken |
-| PATCH | `/admin/users/:id` | `{ active }` | `User` |
+| POST | `/admin/students` | `{ name, email, studentId, semester, password }` | `User`. Enrols them in every course of `semester`. 409 if the email or student ID is taken |
+| GET | `/admin/semesters` | | `[{ semester, courses: [{ id, code, name }], studentCount }]`, always 8 items |
+| POST | `/admin/students/promote` | `{ studentIds }` | `{ promoted: User[], skipped: [{ id, reason }] }`. Moves each student up one semester. Students in semester 8 are skipped |
+| PATCH | `/admin/users/:id` | `{ active }` or, for a student, `{ semester }` | `User`. Changing `semester` moves their enrolment |
 | POST | `/admin/users/:id/reset-password` | `{ password }` | `{ ok: true }` |
 | DELETE | `/admin/users/:id` | | `{ ok: true }` |
 | GET | `/admin/settings` | | `Settings` (any signed in user may read it) |
@@ -86,7 +100,7 @@ There is no self sign-up. Every student, teacher and admin account is created he
 | Method | Path | Who | Body | Returns |
 |---|---|---|---|---|
 | GET | `/courses` | all | | `Course[]` (teacher: own courses, student: enrolled, admin: all) |
-| POST | `/courses` | teacher | `{ code, name }` | `Course` with a generated `joinCode` |
+| POST | `/courses` | teacher | `{ code, name, semester }` | `Course` with a generated `joinCode`. Every student in `semester` is enrolled |
 | POST | `/courses/join` | student | `{ joinCode }` | `Course` (404 bad code, 409 already enrolled) |
 
 ### Assignments
